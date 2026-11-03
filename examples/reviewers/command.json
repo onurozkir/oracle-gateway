@@ -1,0 +1,10 @@
+{
+  "type": "command",
+  "executable": "your-agent-command",
+  "args": [],
+  "model": "your-local-agent-model",
+  "inputFormat": "prompt",
+  "responsePath": [],
+  "passEnv": [],
+  "timeoutMs": 60000
+}

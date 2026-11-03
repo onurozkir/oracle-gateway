@@ -87,3 +87,8 @@ Thumbs.db
 !.vscode/extensions.json
 *.sublime-workspace
 *.sublime-project
+
+.oracle-gate/
+.oracle/
+.superpowers/
+.worktrees/

@@ -1,21 +1,52 @@
 {
   "name": "oracle-gateway",
   "version": "0.1.0",
-  "description": "Enterprise-grade Node.js CLI tool for Oracle Gateway operations",
+  "description": "Independent, evidence-based verification of saved workspaces and Git commits",
   "type": "module",
-  "main": "src/index.js",
+  "main": "dist/index.js",
+  "types": "packages/core/dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./packages/core/dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./reviewers": {
+      "types": "./dist/reviewers.d.ts",
+      "import": "./dist/reviewers.js"
+    }
+  },
+  "files": [
+    "bin/oracle-gate.js",
+    "dist/",
+    "packages/core/dist/*.d.ts",
+    "packages/adapters/dist/*.d.ts",
+    "README.md",
+    "SECURITY.md",
+    ".agent/skills/oracle-verification/SKILL.md"
+  ],
   "bin": {
-    "oracle-gateway": "./bin/oracle-gateway.js"
+    "oracle-gate": "./bin/oracle-gate.js"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=24.0.0"
   },
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "start": "node ./bin/oracle-gateway.js",
-    "dev": "node --watch ./bin/oracle-gateway.js",
-    "lint": "prettier --check .",
+    "prepack": "npm run build",
+    "build": "tsc -b packages/core packages/runtime packages/adapters packages/cli && node scripts/build.mjs",
+    "typecheck": "tsc -b packages/core packages/runtime packages/adapters packages/cli && tsc --noEmit -p tsconfig.tests.json",
+    "start": "node ./bin/oracle-gate.js",
+    "dev": "node --watch ./bin/oracle-gate.js",
+    "lint": "eslint packages tests scripts && prettier --check packages tests scripts bin/oracle-gate.js *.json *.mjs .github",
     "format": "prettier --write .",
-    "test": "node --test"
+    "test": "npm run build && vitest run",
+    "test:package": "npm run build && node --import tsx scripts/test-package.mjs",
+    "test:e2e": "vitest run tests/e2e",
+    "demo:wrong": "npm run build && node --import tsx scripts/demo.ts wrong",
+    "demo:correct": "npm run build && node --import tsx scripts/demo.ts correct",
+    "benchmark": "npm run build && node --import tsx scripts/benchmark.ts"
   },
   "keywords": [
     "cli",
@@ -24,14 +55,25 @@
     "nodejs"
   ],
   "author": "Onur Özkır",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "private": true,
+  "overrides": {
+    "minimatch": "^11.0.1"
+  },
   "dependencies": {
-    "chalk": "^5.3.0",
-    "commander": "^12.1.0",
-    "dotenv": "^16.4.5"
+    "commander": "^15.0.0",
+    "yaml": "^2.9.1",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
-    "prettier": "^3.3.3"
+    "esbuild": "^0.28.2",
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.6.6",
+    "eslint": "^10.14.0",
+    "prettier": "^3.9.10",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.72.1",
+    "vitest": "^5.1.0"
   }
 }

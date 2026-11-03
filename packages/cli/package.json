@@ -1,0 +1,12 @@
+{
+  "name": "@oracle-gate/cli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@oracle-gate/core": "0.1.0",
+    "@oracle-gate/runtime": "0.1.0",
+    "@oracle-gate/adapters": "0.1.0",
+    "commander": "^15.0.0"
+  }
+}

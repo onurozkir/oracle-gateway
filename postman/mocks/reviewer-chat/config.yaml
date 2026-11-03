@@ -1,0 +1,10 @@
+version: 1
+id: bb6c7738-c8f0-4fcb-a437-5b207ce6caef
+name: reviewer-chat
+slug: reviewer-chat
+protocol: http
+port: 4500
+scenarios:
+  - name: default
+    path: ./default.js
+    default: true
