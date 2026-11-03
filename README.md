@@ -6,8 +6,6 @@ Independent Oracle Gateway is a TypeScript CLI that checks AI-generated code aga
 npm install @onurozkir/oracle-gateway
 ```
 
-Requires Node.js 24 or later and [authenticated GitHub Packages access](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry#installing-a-package) with the `@onurozkir` scope mapped to `https://npm.pkg.github.com`.
-
 A pricing agent can implement and test a 10% discount for orders of **100 TL or more** even though the requirement says **over 100 TL**. Its tests pass. The oracle checks exactly 100 TL, expects 100 TL, observes 90 TL, and returns `REJECT`.
 
 ## Run the demos from source
