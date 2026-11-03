@@ -2,9 +2,15 @@
 
 Independent Oracle Gateway is a TypeScript CLI that checks AI-generated code against separately approved acceptance cases. It runs the project's own tests and the oracle cases against the same captured version of the code, then records the evidence and verdict in a JSON report.
 
+```sh
+npm install @onurozkir/oracle-gateway
+```
+
+Requires Node.js 24 or later and [authenticated GitHub Packages access](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry#installing-a-package) with the `@onurozkir` scope mapped to `https://npm.pkg.github.com`.
+
 A pricing agent can implement and test a 10% discount for orders of **100 TL or more** even though the requirement says **over 100 TL**. Its tests pass. The oracle checks exactly 100 TL, expects 100 TL, observes 90 TL, and returns `REJECT`.
 
-## Quick start
+## Run the demos from source
 
 Use Node.js 24 or later and npm. Git is required for the bundled demos and explicit commit verification. Local workspace verification also works in directories without Git. On Windows, the process cleanup helper uses the system .NET Framework compiler.
 
@@ -28,26 +34,6 @@ The demos use temporary Git repositories and write reports under `.oracle-gate/r
 npm start -- report --input .oracle-gate/runs/demo-wrong.json
 ```
 
-## Install from GitHub Packages
-
-This package is hosted at `npm.pkg.github.com`. Before installing it, map the `@onurozkir` scope to GitHub Packages in the consuming project's `.npmrc`. Without a scope mapping, npm uses its default registry, `registry.npmjs.org`.
-
-```ini
-@onurozkir:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
-```
-
-Set `NODE_AUTH_TOKEN` locally to a GitHub classic personal access token with `read:packages` from an account that can access the private package. Then install it with npm:
-
-```sh
-npm install @onurozkir/oracle-gateway
-npx --no-install oracle-gate --help
-```
-
-Add `--save-dev` if the CLI is only used during development.
-
-Use `npx --no-install oracle-gate` in place of `npm start --` when running the installed CLI. Maintainers can publish a new version by dispatching [Publish npm package](.github/workflows/publish-package.yml) on `main` with the version from `package.json`. The workflow runs the test matrix before publishing and checks the published package in a clean consumer.
-
 ## Verify a local task
 
 1. Save the original request as UTF-8 and draft a YAML contract outside the candidate project. Include `spec`, `policy`, and optionally `execution`. The [demo bundle generator](tests/authority.ts) and [acceptance cases](tests/helpers.ts) show the current input format.
@@ -55,7 +41,7 @@ Use `npx --no-install oracle-gate` in place of `npm start --` when running the i
 3. Optionally review the draft. Record approval after the user confirms the exact contract hash.
 4. Save the implementation and verify the approved task.
 
-Replace the uppercase placeholders with paths and the values returned by `task start`.
+Replace the uppercase placeholders with paths and the values returned by `task start`. When using the installed package, skip the build and replace `npm start --` with `npx --no-install oracle-gate`.
 
 ```sh
 npm run build
@@ -110,6 +96,8 @@ npm run test:package
 ```
 
 The package check builds a real tarball, installs it into a clean consumer project, and exercises the CLI and public ESM exports. See the [contribution guide](CONTRIBUTING.md) for development checks and [benchmark methodology](docs/benchmark-methodology.md) for evaluation scope. Maintained by Onur Özkır.
+
+Maintainers can dispatch [Publish npm package](.github/workflows/publish-package.yml) on `main` with the version from `package.json`. The workflow runs the test matrix and verifies a clean install after publishing.
 
 ## License
 
