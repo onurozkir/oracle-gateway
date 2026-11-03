@@ -9,6 +9,6 @@ This is a functioning cooperative local verification tool with a real Git/subpro
 - JSON reports are historical unsigned observations, not attestations. `report` recomputes their decision but does not rerun code or prove current freshness, author identity or approval.
 - The 42 seeded benchmark cases are synthetic comparison smoke tests. Same-model/cross-model/self-review experiments, token costs, real-world false-positive/negative rates and protected CI experiments have NOT been run.
 - The workflow is ordinary trusted-fixture CI, not a protected controller that safely runs arbitrary PR code. Hosted CI matrix results are unverified until actually run there.
-- The package is marked `private` and `UNLICENSED`.
+- Package distribution uses restricted access on GitHub Packages.
 
 See the [architecture decisions](architecture.md) and [implementation history](implementation-progress.md).

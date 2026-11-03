@@ -1,6 +1,6 @@
 # Reviewer providers
 
-Both transports implement the same `ReviewerProvider` contract and are usable through `verify --reviewer-config` or the `oracle-gateway/reviewers` npm export. Configuration does not select a vendor or model automatically. No external verification tool or provider SDK is installed.
+Both transports implement the same `ReviewerProvider` contract and are usable through `verify --reviewer-config` or the `@onurozkir/oracle-gateway/reviewers` npm export. Configuration does not select a vendor or model automatically. No external verification tool or provider SDK is installed.
 
 ## OpenAI-compatible HTTP
 
@@ -67,7 +67,7 @@ PowerShell API-key setup uses `$env:ORACLE_REVIEWER_API_KEY = 'your-key'` in the
 Programmatic access:
 
 ```js
-import { createReviewerProvider } from 'oracle-gateway/reviewers';
+import { createReviewerProvider } from '@onurozkir/oracle-gateway/reviewers';
 const reviewer = createReviewerProvider({
   type: 'openai-compatible',
   baseUrl: 'https://your-provider.example/v1',

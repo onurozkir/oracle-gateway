@@ -21,6 +21,7 @@ try {
       })
     ).stdout
   )[0];
+  assert.equal(packed.name, '@onurozkir/oracle-gateway');
   const files = packed.files.map((file) => file.path);
   assert.ok(files.includes('dist/cli.js'));
   assert.ok(files.includes('dist/index.js'));
@@ -43,14 +44,15 @@ try {
       npmCli,
       'install',
       join(directory, packed.filename),
-      '--offline',
+      '--prefer-offline',
       '--ignore-scripts',
       '--no-audit',
       '--no-fund',
     ],
     { cwd: installed }
   );
-  const bin = join(installed, 'node_modules', 'oracle-gateway', 'bin', 'oracle-gate.js');
+  const packageDirectory = join(installed, 'node_modules', packed.name);
+  const bin = join(packageDirectory, 'bin', 'oracle-gate.js');
   const help = (await exec(process.execPath, [bin, '--help'], { cwd: installed })).stdout;
   assert.match(help, /oracle-gate/);
   await exec(
@@ -58,7 +60,7 @@ try {
     [
       '--input-type=module',
       '-e',
-      'import { calculateTotal } from "oracle-gateway"; if(calculateTotal(10000)!==10000) process.exit(1);',
+      'import { calculateTotal } from "@onurozkir/oracle-gateway"; if(calculateTotal(10000)!==10000) process.exit(1);',
     ],
     { cwd: installed }
   );
@@ -67,13 +69,13 @@ try {
     [
       '--input-type=module',
       '-e',
-      'import { createReviewerProvider } from "oracle-gateway/reviewers"; const p=createReviewerProvider({type:"command",executable:process.execPath}); if(p.id!=="command")process.exit(1);',
+      'import { createReviewerProvider } from "@onurozkir/oracle-gateway/reviewers"; const p=createReviewerProvider({type:"command",executable:process.execPath}); if(p.id!=="command")process.exit(1);',
     ],
     { cwd: installed }
   );
   await writeFile(
     join(installed, 'consumer.mts'),
-    'import { createReviewerProvider } from "oracle-gateway/reviewers"; import type { ReviewerProvider } from "oracle-gateway"; const p: ReviewerProvider = createReviewerProvider({type:"command",executable:"node"}); void p;\n'
+    'import { createReviewerProvider } from "@onurozkir/oracle-gateway/reviewers"; import type { ReviewerProvider } from "@onurozkir/oracle-gateway"; const p: ReviewerProvider = createReviewerProvider({type:"command",executable:"node"}); void p;\n'
   );
   await exec(
     process.execPath,
@@ -91,10 +93,7 @@ try {
     ],
     { cwd: installed }
   );
-  const cli = await readFile(
-    join(installed, 'node_modules', 'oracle-gateway', 'dist', 'cli.js'),
-    'utf8'
-  );
+  const cli = await readFile(join(packageDirectory, 'dist', 'cli.js'), 'utf8');
   assert.doesNotMatch(cli, /from ["']@oracle-gate\//);
   fixture = await createFixture();
   const bundle = join(fixture.root, 'authority');

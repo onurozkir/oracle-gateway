@@ -72,16 +72,40 @@ describe('bounded local executor', () => {
     });
     expect(result.exitCode).toBe(0);
     const pid = Number(await readFile(marker, 'utf8'));
-    let alive = true;
     try {
-      process.kill(pid, 0);
-    } catch {
-      alive = false;
+      // A successful termination signal can precede disappearance of the PID.
+      await expect
+        .poll(
+          () => {
+            try {
+              process.kill(pid, 0);
+              return true;
+            } catch (error) {
+              if (!(error instanceof Error && 'code' in error && error.code === 'ESRCH'))
+                throw error;
+              return false;
+            }
+          },
+          { timeout: 3000 }
+        )
+        .toBe(false);
+    } catch (error) {
+      try {
+        process.kill(pid, 'SIGKILL');
+      } catch (cleanupError) {
+        if (!(
+          cleanupError instanceof Error &&
+          'code' in cleanupError &&
+          cleanupError.code === 'ESRCH'
+        ))
+          throw new AggregateError(
+            [error, cleanupError],
+            'Descendant assertion and cleanup failed',
+            { cause: cleanupError }
+          );
+      }
+      throw error;
     }
-    if (alive) {
-      process.kill(pid);
-    } // Ensure the RED regression run does not leave a process behind.
-    expect(alive).toBe(false);
   });
 });
 

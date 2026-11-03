@@ -1,0 +1,63 @@
+name: Publish npm package
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version in package.json to publish
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-npm-package
+
+jobs:
+  checks:
+    if: github.repository == 'onurozkir/oracle-gateway' && github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/ci.yml
+
+  publish:
+    needs: checks
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://npm.pkg.github.com
+          scope: '@onurozkir'
+      - name: Check requested version
+        env:
+          REQUESTED_VERSION: ${{ inputs.version }}
+        run: test "$(node -p "require('./package.json').version")" = "$REQUESTED_VERSION"
+      - run: npm ci
+      - name: Build package archive
+        id: pack
+        run: |
+          npm pack --json --pack-destination "$RUNNER_TEMP" > "$RUNNER_TEMP/oracle-pack.json"
+          archive=$(node -p 'require(process.argv[1])[0].filename' "$RUNNER_TEMP/oracle-pack.json")
+          echo "archive=$RUNNER_TEMP/$archive" >> "$GITHUB_OUTPUT"
+      - name: Publish restricted package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ARCHIVE: ${{ steps.pack.outputs.archive }}
+        run: npm publish "$ARCHIVE" --ignore-scripts --access restricted
+      - name: Install and verify the published version
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REQUESTED_VERSION: ${{ inputs.version }}
+        run: |
+          consumer=$(mktemp -d)
+          cd "$consumer"
+          npm install "@onurozkir/oracle-gateway@$REQUESTED_VERSION" --ignore-scripts --no-audit --no-fund
+          test "$(node -p "require('./node_modules/@onurozkir/oracle-gateway/package.json').version")" = "$REQUESTED_VERSION"
+          npm exec --no -- oracle-gate --help
+          node --input-type=module -e "import { calculateTotal } from '@onurozkir/oracle-gateway'; if (calculateTotal(10000) !== 10000) process.exit(1)"

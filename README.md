@@ -28,6 +28,22 @@ The demos use temporary Git repositories and write reports under `.oracle-gate/r
 npm start -- report --input .oracle-gate/runs/demo-wrong.json
 ```
 
+## Install from GitHub Packages
+
+Access to the private package requires an account with package access and a GitHub classic personal access token with `read:packages`. Add the following to the consuming project's `.npmrc` and set `NODE_AUTH_TOKEN` in your environment.
+
+```ini
+@onurozkir:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
+```
+
+```sh
+npm install --save-dev @onurozkir/oracle-gateway
+npx --no-install oracle-gate --help
+```
+
+Use `npx --no-install oracle-gate` in place of `npm start --` when running the installed CLI. Maintainers can publish a new version by dispatching [Publish npm package](.github/workflows/publish-package.yml) on `main` with the version from `package.json`. The workflow runs the test matrix before publishing and checks the published package in a clean consumer.
+
 ## Verify a local task
 
 1. Save the original request as UTF-8 and draft a YAML contract outside the candidate project. Include `spec`, `policy`, and optionally `execution`. The [demo bundle generator](tests/authority.ts) and [acceptance cases](tests/helpers.ts) show the current input format.
@@ -90,3 +106,7 @@ npm run test:package
 ```
 
 The package check builds a real tarball, installs it into a clean consumer project, and exercises the CLI and public ESM exports. See the [contribution guide](CONTRIBUTING.md) for development checks and [benchmark methodology](docs/benchmark-methodology.md) for evaluation scope. Maintained by Onur Özkır.
+
+## License
+
+Licensed under the [MIT License](LICENSE).

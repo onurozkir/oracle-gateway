@@ -22,7 +22,7 @@ Scope clarified on 2026-11-03. The repository implements one independent oracle 
 
 ## Preserved decisions
 
-The owner chose in-place development and confirmed removal of the legacy scaffold. Their earlier edits to .editorconfig, .env.example and .prettierrc remain unchanged. License stays UNLICENSED/private until the owner decides otherwise. No branch switch, commit, publication or deployment was performed.
+The owner chose in-place development and confirmed removal of the legacy scaffold. The initial implementation work was completed in the existing checkout.
 
 Local execution is still UNPROTECTED. Content hashes are not approval authentication. Protected release authority, an independent provider where required, hosted CI execution and real model benchmarks remain separate release tasks; external verification tools are not blockers for completing this component.
 
