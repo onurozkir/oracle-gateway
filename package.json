@@ -1,0 +1,37 @@
+{
+  "name": "oracle-gateway",
+  "version": "0.1.0",
+  "description": "Enterprise-grade Node.js CLI tool for Oracle Gateway operations",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "oracle-gateway": "./bin/oracle-gateway.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "node ./bin/oracle-gateway.js",
+    "dev": "node --watch ./bin/oracle-gateway.js",
+    "lint": "prettier --check .",
+    "format": "prettier --write .",
+    "test": "node --test"
+  },
+  "keywords": [
+    "cli",
+    "oracle",
+    "gateway",
+    "nodejs"
+  ],
+  "author": "Onur Özkır",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3"
+  }
+}
