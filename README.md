@@ -30,17 +30,21 @@ npm start -- report --input .oracle-gate/runs/demo-wrong.json
 
 ## Install from GitHub Packages
 
-Access to the private package requires an account with package access and a GitHub classic personal access token with `read:packages`. Add the following to the consuming project's `.npmrc` and set `NODE_AUTH_TOKEN` in your environment.
+This package is hosted at `npm.pkg.github.com`. Before installing it, map the `@onurozkir` scope to GitHub Packages in the consuming project's `.npmrc`. Without a scope mapping, npm uses its default registry, `registry.npmjs.org`.
 
 ```ini
 @onurozkir:registry=https://npm.pkg.github.com
 //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
 ```
 
+Set `NODE_AUTH_TOKEN` locally to a GitHub classic personal access token with `read:packages` from an account that can access the private package. Then install it with npm:
+
 ```sh
-npm install --save-dev @onurozkir/oracle-gateway
+npm install @onurozkir/oracle-gateway
 npx --no-install oracle-gate --help
 ```
+
+Add `--save-dev` if the CLI is only used during development.
 
 Use `npx --no-install oracle-gate` in place of `npm start --` when running the installed CLI. Maintainers can publish a new version by dispatching [Publish npm package](.github/workflows/publish-package.yml) on `main` with the version from `package.json`. The workflow runs the test matrix before publishing and checks the published package in a clean consumer.
 
