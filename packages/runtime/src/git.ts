@@ -69,8 +69,9 @@ export async function withSnapshot<T>(
     if (!/^(100644|100755) blob [a-f0-9]+\t/.test(entry))
       throw new Error('Unsupported snapshot entry (symlink/submodule)');
   }
-  const root = await mkdtemp(join(tmpdir(), 'oracle-gate-snapshot-'));
-  if (!isWithin(tmpdir(), root) || root === tmpdir()) throw new Error('Unsafe snapshot cleanup');
+  const temporary = await realpath(tmpdir());
+  const root = await mkdtemp(join(temporary, 'oracle-gate-snapshot-'));
+  if (!isWithin(temporary, root) || root === temporary) throw new Error('Unsafe snapshot cleanup');
   try {
     const path = join(root, 'candidate');
     await git(root, [

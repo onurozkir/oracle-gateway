@@ -1,5 +1,5 @@
 import { afterEach, expect, it } from 'vitest';
-import { writeFile } from 'node:fs/promises';
+import { mkdir, symlink, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { Policy } from '@oracle-gate/core';
 import { verify, loadBundle } from '@oracle-gate/runtime';
@@ -45,6 +45,23 @@ it('E2E-002: correct commit satisfies every obligation in local standard policy'
   expect(report.decision.verdict).toBe('ACCEPT');
   expect(report.input.assurance).toBe('local-unprotected');
   expect(report.input.purpose).toBe('demonstration');
+});
+it('verifies a Git commit when the temporary directory is an alias', async () => {
+  const f = await setup();
+  const target = join(f.root, 'actual-temp');
+  const alias = join(f.root, 'temp-alias');
+  await mkdir(target);
+  await symlink(target, alias, 'junction');
+  const key = process.platform === 'win32' ? 'TEMP' : 'TMPDIR';
+  const original = process.env[key];
+  process.env[key] = alias;
+  try {
+    const report = await verify({ ...f, candidate: f.correct, localDemo: true });
+    expect(report.decision.verdict).toBe('ACCEPT');
+  } finally {
+    if (original === undefined) delete process.env[key];
+    else process.env[key] = original;
+  }
 });
 it('checks saved edits and an untracked import even when HEAD contains different code', async () => {
   const f = await setup();
