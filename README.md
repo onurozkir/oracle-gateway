@@ -1,5 +1,7 @@
 # Independent Oracle Gateway
 
+**Read the article behind this project** · [When All AI Agents Agree on an Error, Who Verifies the Truth?](https://onurozkir.com/en/ai-native-swe/when-all-ai-agents-agree-on-an-error)
+
 Independent Oracle Gateway is a TypeScript CLI that checks AI-generated code against separately approved acceptance cases. It runs the project's own tests and the oracle cases against the same captured version of the code, then records the evidence and verdict in a JSON report.
 
 ```sh
